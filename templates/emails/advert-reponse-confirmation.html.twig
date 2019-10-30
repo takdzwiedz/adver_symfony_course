@@ -1,0 +1,18 @@
+<html>
+<body>
+
+<p>Cześć {{ advertResponse.advert.firstName }}!</p>
+
+<p>Użytkownik <strong>{{ advertResponse.firstName }}</strong> kontaktuje się z Tobą
+    w sprawie ogłoszenia <em>{{ advertResponse.advert.title }}</em> z następującą wiadomością:</p>
+
+<p>{{ advertResponse.message }}</p>
+
+<p>
+    Dane kontaktowe: <br>
+    {{ advertResponse.firstName }} {{ advertResponse.lastName }} <br>
+    {{ advertResponse.email }}
+</p>
+
+</body>
+</html>

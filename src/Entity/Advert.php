@@ -2,13 +2,19 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AdvertRepository")
  */
 class Advert
 {
+    CONST STATUS_PUBLISHED = 20;
+    CONST STATUS_UNPUBLISHED = 10;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -22,6 +28,7 @@ class Advert
     private $title;
 
     /**
+     * @Gedmo\Slug(fields={"title"})
      * @ORM\Column(type="string", length=255)
      */
     private $slug;
@@ -62,14 +69,32 @@ class Advert
     private $expiresAt;
 
     /**
+     * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
 
     /**
+     * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
      */
     private $updatedAt;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AdvertResponse", mappedBy="advert", orphanRemoval=true)
+     */
+    private $advertResponses;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Category", mappedBy="adverts")
+     */
+    private $categories;
+
+    public function __construct()
+    {
+        $this->advertResponses = new ArrayCollection();
+        $this->categories = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -206,5 +231,69 @@ class Advert
         $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+
+    /**
+     * @return Collection|AdvertResponse[]
+     */
+    public function getAdvertResponses(): Collection
+    {
+        return $this->advertResponses;
+    }
+
+    public function addAdvertResponse(AdvertResponse $advertRespnse): self
+    {
+        if (!$this->advertResponses->contains($advertRespnse)) {
+            $this->advertResponses[] = $advertRespnse;
+            $advertRespnse->setAdvert($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAdvertResponse(AdvertResponse $advertRespnse): self
+    {
+        if ($this->advertResponses->contains($advertRespnse)) {
+            $this->advertResponses->removeElement($advertRespnse);
+            // set the owning side to null (unless already changed)
+            if ($advertRespnse->getAdvert() === $this) {
+                $advertRespnse->setAdvert(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Category[]
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(Category $category): self
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories[] = $category;
+            $category->addAdvert($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Category $category): self
+    {
+        if ($this->categories->contains($category)) {
+            $this->categories->removeElement($category);
+            $category->removeAdvert($this);
+        }
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getTitle();
     }
 }

@@ -1,0 +1,29 @@
+# fixtures/fixtures.yaml
+App\Entity\Category:
+  category_{1..9}:
+    name (unique): <words(3, true)>
+    description: <sentence()>
+
+App\Entity\Advert:
+  advert_{1..1000}:
+    title: <sentence()>
+    description: <pl_PL:realText(500)>
+    firstName: <pl_PL:firstName()>
+    lastName: <pl_PL:lastName()>
+    email: <pl_PL:email()>
+    phone: <pl_PL:phoneNumber()>
+    #    address: <pl_PL:address()>
+    status: <randomElement([10,20])>
+    categories: '<numberBetween(1,3)>x @category_*'
+    expiresAt: <dateTimeBetween('-5 days', '30 days')>
+    createdAt: <dateTime()>
+
+App\Entity\AdvertResponse:
+  advert-response_{1..300}:
+    firstName: <pl_PL:firstName()>
+    lastName: <pl_PL:lastName()>
+    email: <pl_PL:email()>
+    message: <pl_PL:realText(500)>
+    ip: <ipv4()>
+    createdAt: <dateTime()>
+    advert: '@advert_*'

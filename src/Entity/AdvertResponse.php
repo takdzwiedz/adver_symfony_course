@@ -4,11 +4,13 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\AdvertRespnseRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\AdvertResponseRepository")
  */
-class AdvertRespnse
+class AdvertResponse
 {
     /**
      * @ORM\Id()
@@ -19,20 +21,24 @@ class AdvertRespnse
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(min=3)
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(min="3")
      */
     private $lastName;
 
     /**
+     * @Assert\Email()
      * @ORM\Column(type="string", length=255)
      */
     private $email;
 
     /**
+     * @Assert\Length(min="3")
      * @ORM\Column(type="text")
      */
     private $message;
@@ -55,7 +61,7 @@ class AdvertRespnse
     private $updatedAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Advert", inversedBy="advertRespnses")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Advert", inversedBy="advertResponses")
      * @ORM\JoinColumn(nullable=false)
      */
     private $advert;
